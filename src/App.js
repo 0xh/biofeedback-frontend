@@ -1,45 +1,20 @@
-import React, { Component } from 'react';
-import './App.css';
-import GoogleLogin, { GoogleLogout } from 'react-google-login';
-import jwt from 'jsonwebtoken';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import configureStore from './store';
+import AppRouter from './core/containers/AppRouter';
 
-class App extends Component {
-  responseGoogle = async (res) => {
-    console.log(res);
-    const tokenBlob = new Blob(
-      [JSON.stringify({ access_token: res.accessToken }, null, 2)],
-      { type: 'application/json' },
-    );
-    const options = {
-      method: 'POST',
-      body: tokenBlob,
-    };
-    const response = await fetch('https://biofeedback-api.herokuapp.com/auth/google', options);
-    const body = await response.json();
-    console.log(jwt.decode(body.jwt, 'asdfsadfasdfasdf'));
-  };
+const { store, persistor } = configureStore();
 
-  render() {
-    return (
-      <div className="App">
-        <GoogleLogin
-          clientId={process.env.REACT_APP_CLIENT_ID}
-          buttonText="Login"
-          onSuccess={this.responseGoogle}
-          onFailure={console.log}
-          responseType="token"
-          cookiePolicy="single_host_origin"
-          scope="https://www.googleapis.com/auth/plus.login"
-        />
+const Loading = () => <div>Betöltés...</div>;
 
-        <GoogleLogout
-          clientId={process.env.REACT_APP_CLIENT_ID}
-          buttonText="Logout"
-          onLogoutSuccess={console.log}
-        />
-      </div>
-    );
-  }
-}
-
-export default App;
+export default () => (
+  <Provider store={store}>
+    <PersistGate
+      persistor={persistor}
+      loading={<Loading />}
+    >
+      <AppRouter />
+    </PersistGate>
+  </Provider>
+);
