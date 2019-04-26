@@ -24,6 +24,9 @@ export default (state = initialState, action) => {
     case userTypes.USER_LOGIN_FAILURE:
       return { ...state, isFetching: false, error: action.error };
 
+    case userTypes.USER_LOGOUT:
+      return { ...state, token: null, user: null };
+
     default:
       return state;
   }

@@ -1,3 +1,4 @@
 import userLogin from './userLogin';
+import userLogout from './userLogout';
 
-export default { userLogin };
+export default { userLogin, userLogout };
