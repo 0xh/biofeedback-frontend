@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import * as userTypes from '../types';
 
 const initialState = {
-  token: null,
+  token: undefined,
   isFetching: false,
   error: undefined,
   user: null,
@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
       return { ...state, isFetching: false, error: action.error };
 
     case userTypes.USER_LOGOUT:
-      return { ...state, token: null, user: null };
+      return { ...state, token: undefined, user: null };
 
     default:
       return state;
