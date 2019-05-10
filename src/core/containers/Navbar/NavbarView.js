@@ -22,7 +22,7 @@ const NavbarView = ({
     <Collapse isOpen={isOpen} navbar>
       <Nav navbar>
         <NavItem>
-          <Link className="nav-link" to="/components/">Components</Link>
+          <Link className="nav-link" to="/institution/">Institutions</Link>
         </NavItem>
         <NavItem>
           <Link className="nav-link" to="/">asd</Link>
