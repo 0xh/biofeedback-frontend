@@ -8,6 +8,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case institutionTypes.CREATE_INSTITUTION_REQUEST:
     case institutionTypes.INSTITUTION_ASSIGN_ADMIN_REQUEST:
     case institutionTypes.UPDATE_INSTITUTION_REQUEST:
     case institutionTypes.DELETE_INSTITUTION_REQUEST:
@@ -17,6 +18,7 @@ export default (state = initialState, action) => {
     case institutionTypes.FETCH_INSTITUTIONS_SUCCESS:
       return { ...state, isFetching: false, data: action.payload };
 
+    case institutionTypes.CREATE_INSTITUTION_FAILURE:
     case institutionTypes.INSTITUTION_ASSIGN_ADMIN_FAILURE:
     case institutionTypes.UPDATE_INSTITUTION_FAILURE:
     case institutionTypes.DELETE_INSTITUTION_FAILURE:
@@ -52,6 +54,13 @@ export default (state = initialState, action) => {
         })),
       };
     }
+
+    case institutionTypes.CREATE_INSTITUTION_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        data: state.data.concat(action.payload),
+      };
     default:
       return state;
   }

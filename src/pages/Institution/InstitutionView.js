@@ -12,13 +12,18 @@ const InstitutionView = ({
   selectInstitution,
   isOpen,
   modifiedInstitution,
-  modifyInstitution,
   toggle,
+  handleCreateInstitution,
+  onSubmit,
   ...modalProps
 }) => (
   <>
     <Container>
       <h1>Institutions</h1>
+      <button onClick={handleCreateInstitution} type="button" className="float-right btn btn-success my-3">
+        <i className="fas fa-plus-circle mr-2" />
+        Create
+      </button>
       <Table striped>
         <thead>
           <tr>
@@ -53,17 +58,16 @@ const InstitutionView = ({
     <Modal
       title="Modify institution"
       isOpen={isOpen}
-      onSubmit={modifyInstitution}
+      onSubmit={onSubmit}
       toggle={toggle}
     >
-      {
-      modifiedInstitution && (
+
       <InstitutionForm
         {...modalProps}
         modifiedInstitution={modifiedInstitution}
       />
-      )
-    }
+
+
     </Modal>
   </>
 );
@@ -74,8 +78,9 @@ InstitutionView.propTypes = {
   selectInstitution: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   modifiedInstitution: PropTypes.shape({}).isRequired,
-  modifyInstitution: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  handleCreateInstitution: PropTypes.func.isRequired,
 };
 
 export default InstitutionView;

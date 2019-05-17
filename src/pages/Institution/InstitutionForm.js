@@ -18,7 +18,7 @@ const InstitutionForm = ({ admins, modifiedInstitution, onFieldChange }) => (
     </FormGroup>
 
     <FormGroup>
-      <Label for="adminId">Measuremetn admin</Label>
+      <Label for="adminId">Measurement admin</Label>
       <Dropdown
         id="adminId"
         options={admins}
@@ -35,7 +35,12 @@ const InstitutionForm = ({ admins, modifiedInstitution, onFieldChange }) => (
 );
 
 InstitutionForm.defaultProps = {
-  modifiedInstitution: {},
+  modifiedInstitution: {
+    name: '',
+    address: '',
+    adminId: '',
+    measurementCount: 0,
+  },
 };
 
 InstitutionForm.propTypes = {

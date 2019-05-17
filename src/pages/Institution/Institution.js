@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import InstitutionView from './InstitutionView';
 import Loading from '../../core/components/Loading';
 
+const modalTypes = {
+  CREATE: 'CREATE',
+  MODIFY: 'MODIFY',
+};
+
 export default class Institution extends Component {
   state = {
     isOpen: false,
-    modifiedInstitution: null,
+    modifiedInstitution: undefined,
+    modalType: modalTypes.CREATE,
   }
 
   async componentDidMount() {
@@ -25,6 +31,7 @@ export default class Institution extends Component {
     const modifiedInstitution = institutions.find(({ _id }) => _id === id);
     this.setState({
       isOpen: true,
+      modalType: modalTypes.MODIFY,
       modifiedInstitution: {
         id,
         name: modifiedInstitution.name,
@@ -45,7 +52,7 @@ export default class Institution extends Component {
       const { id, adminId } = modifiedInstitution;
       await assignAdmin(id, adminId);
     }
-    this.setState({ modifiedInstitution: null });
+    this.setState({ modifiedInstitution: undefined });
   }
 
   onFieldChange = ({ target: { id, value, type } }) => {
@@ -73,10 +80,33 @@ export default class Institution extends Component {
     return institution.adminId !== modifiedInstitution.adminId;
   }
 
+  handleCreateInstitution = () => {
+    this.setState({
+      isOpen: true,
+      modifiedInstitution: undefined,
+      modalType: modalTypes.CREATE,
+    });
+  }
+
+  createInstitution = async () => {
+    const { modifiedInstitution } = this.state;
+    const { createInstitution, assignAdmin } = this.props;
+    const { adminId, ...newInstitution } = modifiedInstitution;
+    this.setState({ isOpen: false });
+    await createInstitution(newInstitution);
+    if (adminId !== undefined) {
+      const { institutions } = this.props;
+      const newlyCreatedInstitution = institutions[institutions.length - 1];
+      await assignAdmin(newlyCreatedInstitution._id, adminId);
+    }
+    this.setState({ modifiedInstitution: undefined });
+  }
+
   toggle = () => this.setState(({ isOpen }) => ({ isOpen: !isOpen }))
 
   render() {
     const { isFetching } = this.props;
+    const { modalType } = this.state;
     const admins = this.makeAdminOptions();
 
     return (
@@ -88,8 +118,12 @@ export default class Institution extends Component {
           selectInstitution={this.selectInstitution}
           admins={admins}
           onFieldChange={this.onFieldChange}
-          modifyInstitution={this.modifyInstitution}
           toggle={this.toggle}
+          handleCreateInstitution={this.handleCreateInstitution}
+          createInstitution={this.createInstitution}
+          onSubmit={modalType === modalTypes.MODIFY
+            ? this.modifyInstitution
+            : this.createInstitution}
         />
       </Loading>
     );
@@ -105,4 +139,5 @@ Institution.propTypes = {
   admins: PropTypes.arrayOf().isRequired,
   updateInstitution: PropTypes.func.isRequired,
   assignAdmin: PropTypes.func.isRequired,
+  createInstitution: PropTypes.func.isRequired,
 };
