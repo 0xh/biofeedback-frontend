@@ -24,6 +24,7 @@ const InstitutionForm = ({ admins, modifiedInstitution, onFieldChange }) => (
         options={admins}
         onChange={({ id, value }) => onFieldChange({ target: { id, value } })}
         selected={modifiedInstitution.adminId}
+        placeholder="Select measurement admin"
       />
     </FormGroup>
 

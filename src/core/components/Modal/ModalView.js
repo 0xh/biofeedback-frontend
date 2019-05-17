@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 
 const ModalView = ({
-  isOpen, toggle, children, title, onSubmit,
+  isOpen, toggle, children, title, onSubmit, isSubmitDisabled,
 }) => (
   <Modal isOpen={isOpen} toggle={toggle}>
     <ModalHeader toggle={toggle}>{title}</ModalHeader>
@@ -13,7 +13,7 @@ const ModalView = ({
       {children}
     </ModalBody>
     <ModalFooter>
-      <Button color="primary" onClick={onSubmit}>Save</Button>{' '}
+      <Button disabled={isSubmitDisabled} color="primary" onClick={onSubmit}>Save</Button>{' '}
       <Button color="secondary" onClick={toggle}>Cancel</Button>
     </ModalFooter>
   </Modal>
@@ -21,6 +21,7 @@ const ModalView = ({
 
 ModalView.defaultProps = {
   title: 'Modal title',
+  isSubmitDisabled: false,
 };
 
 ModalView.propTypes = {
@@ -32,6 +33,7 @@ ModalView.propTypes = {
   ]).isRequired,
   title: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
+  isSubmitDisabled: PropTypes.bool,
 };
 
 export default ModalView;

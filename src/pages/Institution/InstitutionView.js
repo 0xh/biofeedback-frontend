@@ -60,6 +60,9 @@ const InstitutionView = ({
       isOpen={isOpen}
       onSubmit={onSubmit}
       toggle={toggle}
+      isSubmitDisabled={!modifiedInstitution
+      || !modifiedInstitution.name
+      || !modifiedInstitution.address}
     >
 
       <InstitutionForm
