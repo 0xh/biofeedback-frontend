@@ -1,4 +1,5 @@
 import * as institutionTypes from '../types';
+import assignAdmin from '../../../api/institution/assignAdmin';
 
 export const institutionAssignAdminRequest = () => ({
   type: institutionTypes.INSTITUTION_ASSIGN_ADMIN_REQUEST,
@@ -15,25 +16,15 @@ export const institutionAssignAdminFailure = error => ({
 });
 
 
-export default (id, adminId) => async (dispatch, getState) => {
+export default (id, adminId) => async (dispatch) => {
   dispatch(institutionAssignAdminRequest());
-  const { token } = getState().user;
-  const res = await fetch(`http://biofeedback-api.herokuapp.com/institution/${id}/user/${adminId}`,
-    {
-      method: 'put',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const adminResponse = await assignAdmin(id, adminId);
 
 
-  const ok = res.status >= 200 && res.status < 299;
-
-  const response = await res.json();
-  if (!ok) {
-    dispatch(institutionAssignAdminFailure(response.message));
+  if (adminResponse instanceof Error) {
+    dispatch(institutionAssignAdminFailure(adminResponse.message));
     return;
   }
 
-  dispatch(institutionAssignAdminSuccess(response));
+  dispatch(institutionAssignAdminSuccess(adminResponse));
 };

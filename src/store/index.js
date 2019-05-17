@@ -14,22 +14,21 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export default () => {
-  const store = createStore(
-    persistedReducer,
-    composeWithDevTools(
-      applyMiddleware(thunk),
-    ),
-  );
 
-  if (process.env.NODE_ENV !== 'production') {
-    if (module.hot) {
-      module.hot.accept('./reducers', () => {
-        store.replaceReducer(rootReducer);
-      });
-    }
+const store = createStore(
+  persistedReducer,
+  composeWithDevTools(
+    applyMiddleware(thunk),
+  ),
+);
+
+if (process.env.NODE_ENV !== 'production') {
+  if (module.hot) {
+    module.hot.accept('./reducers', () => {
+      store.replaceReducer(rootReducer);
+    });
   }
+}
 
-  const persistor = persistStore(store);
-  return { store, persistor };
-};
+const persistor = persistStore(store);
+export default { store, persistor };

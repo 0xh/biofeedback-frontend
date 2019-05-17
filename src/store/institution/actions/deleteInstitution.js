@@ -1,4 +1,5 @@
 import * as institutionTypes from '../types';
+import deleteInstitution from '../../../api/institution/deleteInstitution';
 
 export const deleteInstitutionRequest = () => ({
   type: institutionTypes.DELETE_INSTITUTION_REQUEST,
@@ -15,21 +16,12 @@ export const deleteInstitutionFailure = error => ({
 });
 
 
-export default id => async (dispatch, getState) => {
+export default id => async (dispatch) => {
   dispatch(deleteInstitutionRequest());
-  const { token } = getState().user;
 
-  const res = await fetch(`https://biofeedback-api.herokuapp.com/institution/${id}`,
-    {
-      method: 'delete',
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const response = await deleteInstitution(id);
 
-  const ok = res.status >= 200 && res.status < 299;
-
-
-  if (!ok) {
-    const response = await res.json();
+  if (response instanceof Error) {
     dispatch(deleteInstitutionFailure(response.message));
     return;
   }

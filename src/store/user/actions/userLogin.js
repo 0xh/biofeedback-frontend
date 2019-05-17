@@ -1,4 +1,5 @@
 import * as userTypes from '../types';
+import userApi from '../../../api/user';
 
 export const userLoginRequest = () => ({
   type: userTypes.USER_LOGIN_REQUEST,
@@ -22,15 +23,11 @@ export default accessToken => async (dispatch) => {
     [JSON.stringify({ access_token: accessToken }, null, 2)],
     { type: 'application/json' },
   );
-  const options = {
-    method: 'POST',
-    body: tokenBlob,
-  };
-  const response = await fetch('https://biofeedback-api.herokuapp.com/auth/google', options);
-  const body = await response.json();
-  if (body && body.jwt) {
-    dispatch(userLoginSuccess(body.jwt));
+  const res = await userApi.userLogin(tokenBlob);
+
+  if (res instanceof Error) {
+    dispatch(userLoginFailure(res.message));
   } else {
-    dispatch(userLoginFailure('error'));
+    dispatch(userLoginSuccess(res));
   }
 };

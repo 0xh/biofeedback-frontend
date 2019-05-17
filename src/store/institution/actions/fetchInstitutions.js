@@ -1,4 +1,5 @@
 import * as institutionTypes from '../types';
+import fetchInstitutions from '../../../api/institution/fetchInstitutions';
 
 export const fetchInstitutionsRequest = () => ({
   type: institutionTypes.FETCH_INSTITUTIONS_REQUEST,
@@ -15,19 +16,15 @@ export const fetchInstitutionFailure = error => ({
 });
 
 
-export default () => async (dispatch, getState) => {
-  const { token } = getState().user;
+export default () => async (dispatch) => {
   dispatch(fetchInstitutionsRequest());
 
-  const res = await fetch('https://biofeedback-api.herokuapp.com/institution',
-    { headers: { Authorization: `Bearer ${token}` } });
-  const response = await res.json();
-  const ok = res.status >= 200 && res.status < 299;
+  const institutionsResponse = await fetchInstitutions();
 
-  if (!ok) {
-    dispatch(fetchInstitutionFailure(response.message));
+  if (institutionsResponse instanceof Error) {
+    dispatch(fetchInstitutionFailure(institutionsResponse.message));
     return;
   }
 
-  dispatch(fetchInstitutionsSuccess(response));
+  dispatch(fetchInstitutionsSuccess(institutionsResponse));
 };

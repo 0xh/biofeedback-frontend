@@ -1,4 +1,5 @@
 import * as institutionTypes from '../types';
+import updateInstitution from '../../../api/institution/updateInstitution';
 
 export const updateInistitutionRequest = () => ({
   type: institutionTypes.UPDATE_INSTITUTION_REQUEST,
@@ -15,25 +16,14 @@ export const updateInstitutionFailure = error => ({
 });
 
 
-export default ({ id, ...body }) => async (dispatch, getState) => {
+export default ({ id, ...body }) => async (dispatch) => {
   dispatch(updateInistitutionRequest());
-  const { token } = getState().user;
-  const res = await fetch(`https://biofeedback-api.herokuapp.com/institution/${id}`,
-    {
-      method: 'put',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+
+  const updatedInstitutionResponse = await updateInstitution(id, body);
 
 
-  const ok = res.status >= 200 && res.status < 299;
-
-  if (!ok) {
-    const response = await res.json();
-    dispatch(updateInstitutionFailure(response.message));
+  if (updatedInstitutionResponse instanceof Error) {
+    dispatch(updateInstitutionFailure(updatedInstitutionResponse.message));
     return;
   }
 

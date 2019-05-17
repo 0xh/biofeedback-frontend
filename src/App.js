@@ -1,17 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import configureStore from './store';
+import redux from './store';
 import AppRouter from './core/containers/AppRouter';
 
-const { store, persistor } = configureStore();
 
 const Loading = () => <div>Betöltés...</div>;
 
 export default () => (
-  <Provider store={store}>
+  <Provider store={redux.store}>
     <PersistGate
-      persistor={persistor}
+      persistor={redux.persistor}
       loading={<Loading />}
     >
       <AppRouter />

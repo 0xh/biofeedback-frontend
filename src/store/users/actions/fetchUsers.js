@@ -1,4 +1,5 @@
 import * as usersTypes from '../types';
+import fetchUsers from '../../../api/users/fetchUsers';
 
 export const fetchUsersRequest = () => ({
   type: usersTypes.FETCH_USERS_REQUEST,
@@ -15,20 +16,15 @@ export const fetchUsersFailure = error => ({
 });
 
 
-export default () => async (dispatch, getState) => {
-  const { token } = getState().user;
+export default () => async (dispatch) => {
   dispatch(fetchUsersRequest());
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-  const res = await fetch('https://biofeedback-api.herokuapp.com/user',
-    { headers });
+  const usersResponse = await fetchUsers();
 
-  const response = await res.json();
-  const ok = res.status >= 200 && res.status < 299;
 
-  if (!ok) {
-    dispatch(fetchUsersFailure(response.message));
+  if (usersResponse instanceof Error) {
+    dispatch(fetchUsersFailure(usersResponse.message));
     return;
   }
-  dispatch(fetchUsersSuccess(response));
+  dispatch(fetchUsersSuccess(usersResponse));
 };
